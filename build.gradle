@@ -1,6 +1,46 @@
 buildscript {
     ext {
-        compose_ui_version = '1.1.1'
+        minSdkVersion = 26
+        compileSdkVersion = 33
+        targetSdkVersion = 33
+        gradlePluginVersion = '7.1.2'
+        kotlin_version = "1.6.10"
+        appcompat_version = "1.5.1"
+        core_version = "1.9.0"
+        test_core_version = "1.5.0"
+        test_ext_kotlin_runner_version = '1.1.4'
+        fragment_version = "1.5.0"
+        recyclerview_version = "1.2.1"
+        play_service_version = '4.3.10'
+        dagger_hilt_version = '2.44'
+        dagger_hilt_work_manager_version = "1.0.0"
+        dagger_hilt_compiler_version = "1.0.0"
+        dagger_hilt_compose_navigation_version = "1.0.0"
+        retrofitVersion = "2.9.0"
+        okHttpVersion = "4.9.1"
+        lifecycle_version = "2.6.0-alpha03"
+        room_version = "2.4.2"
+        timber_version = "4.7.1"
+        nav_version = '2.4.2'
+        preference_version = "1.2.0"
+        arch_version = "2.1.0"
+        coroutines_version = '1.6.4'
+        work_manager_version = "2.7.1"
+        robolectricVersion = '4.5.1'
+        hamcrestVersion = "2.2"
+        mockito_version = '3.9.0'
+        espresso_version = "3.5.0"
+        prefDataStore = "1.0.0"
+        composeVersion = "1.3.1"
+        materialVersion = "1.7.0"
+        crashlyticsVersion = "2.9.1"
+        composeMaterialVersion = "1.1.5"
+        accompanistInsetsVersion = "0.23.1"
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:${dagger_hilt_version}"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
