@@ -1,70 +1,91 @@
 package com.icedtea.githubusers.ui.navigation
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.content.Intent
-import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.util.Consumer
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.icedtea.githubusers.ui.screens.login.LoginProgressScreen
+import com.icedtea.githubusers.ui.screens.start.StartScreen
 import com.icedtea.githubusers.ui.screens.login.LoginScreen
 import com.icedtea.githubusers.ui.screens.users.UsersScreen
-import com.icedtea.githubusers.utils.REDIRECT_URL
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(
+    modifier: Modifier = Modifier,
+) {
     val navController = rememberNavController()
-    HandleIntents(navController)
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Welcome.route,
+        startDestination = Screen.Start.route,
         modifier = modifier
     ) {
-        composable(route = Screen.Welcome.route) {
+        composable(route = Screen.Start.route) {
+            StartScreen(
+                goToLoginScreen = {
+                    navigateToLogin(navController)
+                },
+                goToUsersScreen = { token ->
+                    navController.navigate(
+                        Screen.Users.navigationRoute(token, false),
+                    )
+                }
+            )
+        }
+        composable(route = Screen.Login.route) {
             LoginScreen()
         }
         composable(
-            route = Screen.Home.route,
-            deepLinks = Screen.Home.deepLinks
-        ) {
-            UsersScreen()
-        }
-    }
-}
+            route = Screen.LoginProgressScreen.route,
+            deepLinks = Screen.LoginProgressScreen.deepLinks,
+            arguments = Screen.LoginProgressScreen.arguments
+        ) { backStackEntry ->
+            backStackEntry.arguments?.getString(Screen.LoginProgressScreen.CODE_KEY)?.let { code ->
+                if (code.isNotEmpty()) {
+                    LoginProgressScreen(
+                        code = code,
+                        goToLoginScreen = { navigateToLogin(navController) },
+                        goToUserScreen =  {
+                            navController.navigate(
+                                Screen.Users.navigationRoute(it, true)
+                            )
+                        }
 
-@Composable
-private fun HandleIntents(
-    navController: NavHostController
-) {
-    val activity = (LocalContext.current.getActivity() as ComponentActivity)
-    DisposableEffect(navController) {
-        val listener = Consumer<Intent> { intent ->
-            intent?.data?.let { uri ->
-                if (uri.toString().startsWith(REDIRECT_URL)) {
-                    navController.navigate(Screen.Home.navigationRoute())
+                    )
+                } else {
+                    navigateToLogin(navController)
                 }
+            } ?: kotlin.run {
+                navigateToLogin(navController)
             }
         }
-        activity.addOnNewIntentListener(listener)
-        onDispose { activity.removeOnNewIntentListener(listener) }
+        composable(
+            route = Screen.Users.route,
+            arguments = Screen.Users.arguments
+        ) { backStackEntry ->
+            backStackEntry.arguments?.let { bundle ->
+                val willSave = bundle.getBoolean(Screen.Users.WILL_SAVE_KEY)
+                bundle.getString(Screen.Users.TOKEN_KEY)?.let { token ->
+                    if (token.isNotEmpty()) {
+                        UsersScreen(
+                            token = token,
+                            willSave = willSave
+                        )
+                    } else {
+                        navigateToLogin(navController)
+                    }
+                }
+            }?: kotlin.run {
+                navigateToLogin(navController)
+            }
+        }
     }
 }
 
-fun Context.getActivity(): Activity = when (this) {
-    is Activity -> {
-        this
-    }
-    is ContextWrapper -> {
-        baseContext.getActivity()
-    }
-    else -> {
-        getActivity()
+private fun navigateToLogin(navController: NavHostController) {
+    navController.navigate(Screen.Login.navigationRoute()) {
+        popUpTo(Screen.Login.route) { inclusive = true }
     }
 }
