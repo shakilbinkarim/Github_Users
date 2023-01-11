@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Github Users</string>
+
+    <string name="ok">OK</string>
+
+    <!--Error Messages-->
+    <string name="msg_err_failed_to_login">Failed to login.</string>
+
 </resources>
