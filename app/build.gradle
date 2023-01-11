@@ -51,9 +51,11 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "BASE_URL", "\"https://github.com/\""
+            buildConfigField "String", "BASE_USER_URL", "\"https://api.github.com/\""
         }
         release {
             buildConfigField "String", "BASE_URL", "\"https://github.com/\""
+            buildConfigField "String", "BASE_USER_URL", "\"https://api.github.com/\""
         }
     }
 }
