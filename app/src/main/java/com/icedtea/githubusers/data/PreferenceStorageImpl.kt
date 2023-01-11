@@ -41,7 +41,7 @@ class PreferenceStorageImpl @Inject constructor(
             ""
         )
 
-    override suspend fun setAccessToken(token: String) {
+    override suspend fun saveAccessToken(token: String) {
         dataStore.setValue(PreferencesKeys.ACCESS_TOKEN, token)
     }
 

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface PreferenceStorage {
 
     val accessToken: Flow<String>
-    suspend fun setAccessToken(time: String)
+    suspend fun saveAccessToken(token: String)
 
 
     /***
