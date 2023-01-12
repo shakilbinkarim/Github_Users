@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +35,8 @@ import com.icedtea.githubusers.domain.users.User
 fun UsersScreen(
     viewModel: UserViewModel = hiltViewModel(),
     token: String,
-    willSave: Boolean = false
+    willSave: Boolean = false,
+    onUserClick: (String) -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
         if (willSave) {
@@ -43,17 +45,24 @@ fun UsersScreen(
     }
     val usersList = viewModel.usersPager.collectAsLazyPagingItems()
 
-    UserScreenBasic(usersList)
+    UserScreenBasic(usersList, onUserClick)
 }
 
 @Composable
-private fun UserScreenBasic(usersList: LazyPagingItems<User>) {
+private fun UserScreenBasic(
+    usersList: LazyPagingItems<User>,
+    onUserClick: (String) -> Unit
+) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 20.dp),
     ) {
-        LazyColumn {
+        LazyColumn() {
             items(usersList) { item ->
-                item?.let { UserCard(user = it) }
+                item?.let {
+                    UserCard(user = it, onUserClick = onUserClick)
+                }
             }
 
             when (usersList.loadState.append) {
@@ -90,14 +99,21 @@ private fun UserScreenBasic(usersList: LazyPagingItems<User>) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UserCard(user: User) {
+fun UserCard(
+    user: User,
+    onUserClick: (String) -> Unit
+) {
     Card(
         elevation = 4.dp,
         modifier = Modifier
             .padding(6.dp)
             .fillMaxWidth()
-            .wrapContentHeight()
+            .wrapContentHeight(),
+        onClick = {
+            onUserClick(user.login)
+        }
     ) {
         Row(
             modifier = Modifier
