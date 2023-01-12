@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.icedtea.githubusers.domain.users.User
 import com.icedtea.githubusers.domain.users.UsersRepository
+import com.icedtea.githubusers.utils.DEFAULT_PAGE_SIZE
 
 class UsersDataSource(
     private val repo: UsersRepository
@@ -12,7 +13,7 @@ class UsersDataSource(
     override fun getRefreshKey(state: PagingState<Int, User>): Int? {
         return state.anchorPosition?.let { position ->
             val page = state.closestPageToPosition(position)
-            page?.prevKey ?: page?.nextKey?: 0
+            page?.prevKey?.minus(DEFAULT_PAGE_SIZE - 1) ?: page?.nextKey?.plus(DEFAULT_PAGE_SIZE - 1)
         }
     }
 
@@ -23,7 +24,7 @@ class UsersDataSource(
 
             LoadResult.Page(
                 data = response,
-                prevKey = page,
+                prevKey = null,
                 nextKey = if(response.isNotEmpty()){
                     val sortedList = response.sortedBy{
                         it.id

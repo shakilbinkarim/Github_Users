@@ -1,7 +1,6 @@
 package com.icedtea.githubusers.domain.users
 
 import com.icedtea.githubusers.utils.DEFAULT_PAGE_SIZE
-import com.icedtea.githubusers.utils.Either
 
 interface UsersRepository {
 

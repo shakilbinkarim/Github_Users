@@ -15,12 +15,15 @@ class UsersRepositoryImpl @Inject constructor(
         since: Int,
         perPage: Int
     ): List<User> {
+        var list : List<User> = emptyList()
         val response = service.getUsersList(since, perPage)
         if (response.isSuccessful){
             response.body()?.let {
-                return@let Either.Right(it)
+                list = it
             }
+        }else {
+            throw IllegalStateException("Couldn't get users list")
         }
-        throw IllegalStateException("Couldn't get users list")
+        return list
     }
 }
