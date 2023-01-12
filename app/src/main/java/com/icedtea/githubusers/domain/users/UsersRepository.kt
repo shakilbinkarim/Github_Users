@@ -8,6 +8,6 @@ interface UsersRepository {
     suspend fun getUsersList(
         since: Int = 0,
         perPage: Int = DEFAULT_PAGE_SIZE,
-    ): Either<String, List<User>>
+    ): List<User>
 
 }

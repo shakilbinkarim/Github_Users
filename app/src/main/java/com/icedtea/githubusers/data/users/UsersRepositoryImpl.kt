@@ -10,25 +10,17 @@ import javax.inject.Singleton
 class UsersRepositoryImpl @Inject constructor(
     private val service: UsersService
 ) : UsersRepository{
+    @Throws(IllegalStateException::class)
     override suspend fun getUsersList(
         since: Int,
         perPage: Int
-    ): Either<String, List<User>> = try {
+    ): List<User> {
         val response = service.getUsersList(since, perPage)
         if (response.isSuccessful){
             response.body()?.let {
                 return@let Either.Right(it)
-            } ?: handleError()
-        } else{
-            handleError()
+            }
         }
-    } catch (e: Exception) {
-        handleError()
-    }
-
-    private fun handleError(): Either.Left<String> {
-        return Either.Left(ERROR_MESSAGE)
+        throw IllegalStateException("Couldn't get users list")
     }
 }
-
-private const val ERROR_MESSAGE = "Failed to get Users"
