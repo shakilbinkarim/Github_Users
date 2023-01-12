@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -42,22 +43,6 @@ object AppModule {
         .addConverterFactory(MoshiConverterFactory.create())
         .client(
             OkHttpClient.Builder()
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BASIC
-                }
-            ).build()
-        )
-        .build()
-        .create()
-
-    @Provides
-    @Singleton
-    fun provideUserService(): UsersService = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_USER_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(
-            OkHttpClient.Builder()
                 .addInterceptor(
                     HttpLoggingInterceptor().apply {
                         level = HttpLoggingInterceptor.Level.BASIC
@@ -67,33 +52,41 @@ object AppModule {
         .build()
         .create()
 
-    @Singleton
     @Provides
-    fun provideOkHttpClient(
-        headerInterceptor: HeaderInterceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder().apply {
-            addInterceptor(headerInterceptor)
-        }.build()
+    @Singleton
+    fun provideUserService(
+        preferenceStorage: PreferenceStorage
+    ): UsersService {
+        var token = ""
+        runBlocking {
+            token = preferenceStorage.accessToken.first()
+        }
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_USER_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(getRetrofitClient(token))
+            .build()
+            .create()
+
     }
 
-    @Singleton
-    class HeaderInterceptor @Inject constructor(
-        private val preferenceStorage: PreferenceStorage
-    ) : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response = runBlocking {
-            val original = chain.request()
-            val originalHttpUrl = original.url
-            val token = preferenceStorage.accessToken.first()
-            val requestBuilder = original.newBuilder()
-                .addHeader(
-                    "Authorization",
-                    "Bearer $token"
-                )
-                .url(originalHttpUrl)
-            val request = requestBuilder.build()
-            return@runBlocking chain.proceed(request)
-        }
+    private fun getRetrofitClient(token: String): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                chain.proceed(chain.request().newBuilder().also {
+                    it.addHeader(
+                        "Authorization",
+                        "Bearer $token"
+                    )
+                    it.addHeader("Accept", "application/json")
+                }.build())
+            }.also { client ->
+                if (BuildConfig.DEBUG) {
+                    val logging = HttpLoggingInterceptor()
+                    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+                    client.addInterceptor(logging)
+                }
+            }.build()
     }
 
 }

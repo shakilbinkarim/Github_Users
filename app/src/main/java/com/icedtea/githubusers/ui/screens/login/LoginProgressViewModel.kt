@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.icedtea.githubusers.domain.login.LoginRepository
 import com.icedtea.githubusers.utils.CLIENT_ID
 import com.icedtea.githubusers.utils.CLIENT_SECRET
-import com.icedtea.githubusers.utils.ResourceState
+import com.icedtea.githubusers.utils.Either
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -20,8 +20,8 @@ class LoginProgressViewModel @Inject constructor(
 
     private var loginJob: Job? = null
 
-    private val _onLoginAttempt = Channel<ResourceState<String>>()
-    val onLoginAttempt: Flow<ResourceState<String>> = _onLoginAttempt.receiveAsFlow()
+    private val _onLoginAttempt = Channel<Either<String, String>>()
+    val onLoginAttempt: Flow<Either<String, String>> = _onLoginAttempt.receiveAsFlow()
 
     fun login(code: String) {
         loginJob?.cancel()

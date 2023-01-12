@@ -1,7 +1,6 @@
 package com.icedtea.githubusers.domain.login
 
-import com.icedtea.githubusers.utils.ResourceState
-import kotlinx.coroutines.flow.Flow
+import com.icedtea.githubusers.utils.Either
 
 interface LoginRepository {
 
@@ -9,6 +8,6 @@ interface LoginRepository {
         clientId: String,
         clientSecret: String,
         code: String
-    ): ResourceState<String>
+    ): Either<String, String>
 
 }
