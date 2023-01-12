@@ -50,6 +50,19 @@ sealed class Screen(protected val root: String) {
             "${withArgs(token)}?$WILL_SAVE_KEY=${willSave}"
     }
 
+    object UserDetail : Screen("users_detail_screen") {
+        const val USER_NAME_KEY = "user_name"
+        val route = "$root/{$USER_NAME_KEY}"
+
+        val arguments = listOf(
+            navArgument(USER_NAME_KEY) {
+                defaultValue = ""
+            },
+        )
+
+        fun navigationRoute(userName: String): String = withArgs(userName)
+    }
+
     protected fun withArgs(vararg args: String?): String = buildString {
         append(root)
         args.forEach { arg ->

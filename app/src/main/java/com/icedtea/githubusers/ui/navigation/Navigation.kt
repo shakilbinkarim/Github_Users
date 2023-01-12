@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.icedtea.githubusers.ui.screens.login.LoginProgressScreen
 import com.icedtea.githubusers.ui.screens.start.StartScreen
 import com.icedtea.githubusers.ui.screens.login.LoginScreen
+import com.icedtea.githubusers.ui.screens.userdetails.UserDetailsScreen
 import com.icedtea.githubusers.ui.screens.users.UsersScreen
 
 @Composable
@@ -71,7 +72,30 @@ fun AppNavigation(
                     if (token.isNotEmpty()) {
                         UsersScreen(
                             token = token,
-                            willSave = willSave
+                            willSave = willSave,
+                            onUserClick = {
+                                navController.navigate(
+                                    Screen.UserDetail.navigationRoute(it)
+                                )
+                            }
+                        )
+                    } else {
+                        navigateToLogin(navController)
+                    }
+                }
+            }?: kotlin.run {
+                navigateToLogin(navController)
+            }
+        }
+        composable(
+            route = Screen.UserDetail.route,
+            arguments = Screen.UserDetail.arguments
+        ) { backStackEntry ->
+            backStackEntry.arguments?.let { bundle ->
+                bundle.getString(Screen.UserDetail.USER_NAME_KEY)?.let { userName ->
+                    if (userName.isNotEmpty()) {
+                        UserDetailsScreen(
+                            userName = userName
                         )
                     } else {
                         navigateToLogin(navController)
