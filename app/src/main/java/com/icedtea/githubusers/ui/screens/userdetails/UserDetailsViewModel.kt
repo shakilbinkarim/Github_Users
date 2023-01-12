@@ -20,8 +20,11 @@ class UserDetailsViewModel @Inject constructor(
 
     private var userDetailJob: Job? = null
 
-    private val _userDetail = Channel<Either<String, UserDetail>>()
-    val userDetail: Flow<Either<String, UserDetail>> = _userDetail.receiveAsFlow()
+    private val _userDetail = Channel<UserDetail>()
+    val userDetail: Flow<UserDetail> = _userDetail.receiveAsFlow()
+
+    private val _error = Channel<String>()
+    val error: Flow<String> = _error.receiveAsFlow()
 
     fun loadUserDetails(userName: String) {
         userDetailJob?.cancel()
@@ -29,7 +32,13 @@ class UserDetailsViewModel @Inject constructor(
             val res = repository.getUserDetail(
                 userName
             )
-            _userDetail.send(res)
+            res.suspendedFold(
+                {
+                    _error.send(it)
+                }
+            ) {
+                _userDetail.send(it)
+            }
         }
     }
 
