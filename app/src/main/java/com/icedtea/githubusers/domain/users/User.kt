@@ -1,12 +1,16 @@
 package com.icedtea.githubusers.domain.users
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
 
+@Entity(tableName = "users")
 data class User(
+    @PrimaryKey(autoGenerate = false)
+    @field:Json(name = "id") val id: Int,
     @field:Json(name = "name") val name: String?,
     @field:Json(name = "email") val email: String?,
     @field:Json(name = "login") val login: String,
-    @field:Json(name = "id") val id: Int,
     @field:Json(name = "node_id") val nodeId: String,
     @field:Json(name = "avatar_url") val avatarUrl: String,
     @field:Json(name = "gravatar_id") val gravatarId: String? = null,
