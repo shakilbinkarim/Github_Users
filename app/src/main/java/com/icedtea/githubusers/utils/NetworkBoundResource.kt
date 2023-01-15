@@ -3,7 +3,6 @@ package com.icedtea.githubusers.utils
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.internal.NopCollector.emit
 import retrofit2.Response
 
 /**
