@@ -8,3 +8,5 @@ const val FLOW_SUBSCRIPTION_TIME = 5000L
 const val DEFAULT_PAGE_SIZE = 20
 
 const val UNKNOWN_ERROR = "Unknown Error Occurred"
+
+const val DEFAULT_LOCAL_DATA_CACHE_OUT_TIME_HOURS = 1L

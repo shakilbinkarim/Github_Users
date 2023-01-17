@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage,
-    private val repository: UsersRepository
+    private val repository: UsersRepository,
 ) : ViewModel() {
 
     fun saveAccessToken(token: String) = viewModelScope.launch {

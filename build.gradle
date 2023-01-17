@@ -36,6 +36,7 @@ buildscript {
         crashlyticsVersion = "2.9.1"
         composeMaterialVersion = "1.1.5"
         accompanistInsetsVersion = "0.23.1"
+        paging_version = "3.1.1"
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${gradlePluginVersion}"
