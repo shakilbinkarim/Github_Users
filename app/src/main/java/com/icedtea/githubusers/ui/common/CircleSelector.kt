@@ -27,35 +27,37 @@ fun CircleLevelSelector(
     onLevelSelect: (Int) -> Unit = {},
     currentLevel: Int = 0,
     activeColor: Color = MaterialTheme.colors.primary,
-    inActiveColor: Color = MaterialTheme.colors.secondary, // TODO: change to onDisabled
+    inActiveColor: Color = MaterialTheme.colors.onSurface,
     selectorScale: Float = 0.4f,
     connectorHeightScale: Float = 0.3f,
 ) {
     BoxWithConstraints(
         modifier = modifier,
     ) {
-        val buttonSize = ((maxWidth.value / (maxLevel)) * selectorScale).dp
-        val connectorWidth = (maxWidth - (maxLevel * buttonSize.value).dp) / (maxLevel - 1)
+        // Since there needs to be one more dot than the max level provided
+        val adjustedMaxLevel = maxLevel + 1
+        val buttonSize = ((maxWidth.value / (adjustedMaxLevel)) * selectorScale).dp
+        val connectorWidth =
+            (maxWidth - (adjustedMaxLevel * buttonSize.value).dp) / (adjustedMaxLevel - 1)
         val connectorHeight = (buttonSize.value * connectorHeightScale).dp
-        val currentLevelAdjusted = currentLevel + 1
 
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            for (i in 1..maxLevel) {
+            for (i in 0..maxLevel) {
                 LevelSelectorButton(
                     onLevelSelect = onLevelSelect,
                     index = i,
-                    isActive = i <= currentLevelAdjusted && currentLevel != 0,
+                    isActive = i <= currentLevel && currentLevel != 0,
                     activeColor = activeColor,
                     inActiveColor = inActiveColor,
                     buttonWidth = buttonSize
                 )
-                if (i != maxLevel) {
+                if (i != adjustedMaxLevel) {
                     LevelSelectorButtonConnector(
-                        isActive = i < currentLevelAdjusted,
+                        isActive = i < currentLevel,
                         activeColor = activeColor,
                         inActiveColor = inActiveColor,
                         modifier = Modifier.size(
@@ -96,7 +98,7 @@ private fun LevelSelectorButton(
     val color = if (isActive) activeColor else inActiveColor
     Button(
         onClick = {
-            onLevelSelect(index - 1)
+            onLevelSelect(index)
         },
         colors = ButtonDefaults.buttonColors(color),
         shape = CircleShape,
@@ -111,7 +113,7 @@ fun DefaultPreview() {
         CircleLevelSelector(
             modifier = Modifier.padding(horizontal = 20.dp),
             maxLevel = 7,
-            currentLevel = 5
+            currentLevel = 4
         )
     }
 }
