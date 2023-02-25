@@ -37,6 +37,7 @@ fun CircleLevelSelector(
         val buttonSize = ((maxWidth.value / (maxLevel)) * selectorScale).dp
         val connectorWidth = (maxWidth - (maxLevel * buttonSize.value).dp) / (maxLevel - 1)
         val connectorHeight = (buttonSize.value * connectorHeightScale).dp
+        val currentLevelAdjusted = currentLevel + 1
 
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -47,14 +48,14 @@ fun CircleLevelSelector(
                 LevelSelectorButton(
                     onLevelSelect = onLevelSelect,
                     index = i,
-                    isActive = i <= currentLevel && currentLevel != 1,
+                    isActive = i <= currentLevelAdjusted && currentLevel != 0,
                     activeColor = activeColor,
                     inActiveColor = inActiveColor,
                     buttonWidth = buttonSize
                 )
                 if (i != maxLevel) {
                     LevelSelectorButtonConnector(
-                        isActive = i < currentLevel,
+                        isActive = i < currentLevelAdjusted,
                         activeColor = activeColor,
                         inActiveColor = inActiveColor,
                         modifier = Modifier.size(
@@ -95,7 +96,7 @@ private fun LevelSelectorButton(
     val color = if (isActive) activeColor else inActiveColor
     Button(
         onClick = {
-            onLevelSelect(index)
+            onLevelSelect(index - 1)
         },
         colors = ButtonDefaults.buttonColors(color),
         shape = CircleShape,
