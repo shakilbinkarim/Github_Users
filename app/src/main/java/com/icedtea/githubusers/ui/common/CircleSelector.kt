@@ -47,7 +47,7 @@ fun CircleLevelSelector(
                 LevelSelectorButton(
                     onLevelSelect = onLevelSelect,
                     index = i,
-                    isActive = i <= currentLevel,
+                    isActive = i <= currentLevel && currentLevel != 1,
                     activeColor = activeColor,
                     inActiveColor = inActiveColor,
                     buttonWidth = buttonSize
