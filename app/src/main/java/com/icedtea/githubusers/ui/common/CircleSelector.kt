@@ -1,6 +1,11 @@
 package com.icedtea.githubusers.ui.common
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -101,7 +106,7 @@ private fun LevelSelectorButton(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    GithubUsersTheme() {
+    GithubUsersTheme {
         CircleLevelSelector(
             modifier = Modifier.padding(horizontal = 20.dp),
             maxLevel = 7,
